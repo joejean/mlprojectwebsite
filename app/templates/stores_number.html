@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block navbar%}
+
+{% include 'navbar_2.html'%}
+
+{% endblock %}
+
+{% block content %}
+
+<br>
+<br>
+<h2> Number Of Stores </h2>
+<p class='lead'>For each of the categories you selected, please provide the number &#8212;or at least a good approximation&#8212; of stores that fall  into it.</p> 
+<form role="form" method='post'>
+{% for form in form%}
+
+		{% if form[1].errors %}
+			{% for field_name, field_errors in form[1].errors|dictsort if field_errors%}
+				{% for error in field_errors %}
+					<div class="alert alert-danger alert-dismissible" role="alert">
+					<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span>
+					<span class="sr-only">Close</span></button>
+					<p> {{error}} </p> 
+					</div>
+					
+				{% endfor %}
+			{% endfor %}
+		{% endif %}
+{% endfor %}
+<table class="table table-condensed table-hover">
+<thead>
+	<td><strong>Categories</strong></td>
+	<td><strong>Number of stores</strong></td>
+</thead>
+
+	<tbody>
+	{% for form in form%}
+
+			
+
+		<tr>
+		    <td>
+		    {{form[0]}}
+		    </td>
+		    	{{form[1].csrf_token}}
+			<td>{{form[1].numberOfStores(required="required")}}</td>
+		</tr>
+	{% endfor %}
+
+	
+		<!-- <tr>
+		<td>{{ form.category}}</td>
+		<td>{{ form.numberOfStores}}</td>
+		</tr> -->
+	</tbody>
+	
+</table>
+				
+    <button type="submit" class="btn btn-default">Submit</button>
+                
+</form>
+
+{% endblock %}

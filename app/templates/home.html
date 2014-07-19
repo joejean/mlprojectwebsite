@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block navbar%}
+
+{% include 'navbar_2.html'%}
+
+{% endblock %}
+
+{% block content %}
+
+<br>
+<br>
+<div class="row">
+	<h2>Home </h2>
+	<p class='lead'>Please choose the categories that the current stores on your shopping center fall into. For each of the selected categories, please provide the number &#8212;or at least a good approximation&#8212; of stores that fall  into it.</p> 
+
+
+			{% if form.errors %}
+				{% for field_name, field_errors in form.errors|dictsort if field_errors %}
+					{% for error in field_errors %}
+						<div class="alert alert-danger alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span></button>
+						<p> {{error}} </p> 
+						</div>
+					{% endfor %}
+					
+				{% endfor %}
+			{% endif %}
+
+</div>
+<div class="row">
+	<form class="form-horizontal" role="form" method="post", action="">
+
+				{{ form.csrf_token }}
+
+			   <p> {{form.category(class_='list-unstyled')}}</p>
+			    
+	 <button type="submit" class="btn btn-default">Submit</button>
+	                
+	</form>
+</div>
+
+
+{% endblock %}

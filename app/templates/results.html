@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block navbar%}
+
+{% include 'navbar_2.html'%}
+
+{% endblock %}
+
+{% block content %}
+
+<br>
+<br>
+
+{% if recommendations %}
+
+	<div class="row">
+		<h2>Results </h2>
+		<hr >
+		<br >
+		<h3>Recommended Categories </h3>
+		<p>Following are the recommended stores categori(es) in order of preferences: </p> 
+
+	</div>
+
+	<div class="row">
+
+		<ol>
+			{% for recommendation in recommendations %}
+
+			<li>{{ recommendation[0]}}</li>
+
+			{% endfor %}
+		</ol>
+		
+	</div>
+
+{% else %}
+
+	<div class="row">
+		<h2>Results </h2>
+		<hr >
+		<br >
+		<h3> </h3>
+		<p>Sorry, our algorithm was unable to recommend you store categories based on the information you input.</p> 
+
+	</div>
+
+
+{% endif %}
+
+
+
+{% endblock %}
