@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_util_js import FlaskUtilJs
 # from flask.ext.login import LoginManager
 # from flask.ext.sqlalchemy import SQLAlchemy
 # from flask_mail import Mail
@@ -12,6 +13,7 @@ from flask import Flask
 
 app = Flask(__name__)
 app.config.from_object('config')
+fujs = FlaskUtilJs(app)
 # lm = LoginManager()
 # lm.init_app(app)
 # admin = Admin(app, name ="NYUAD Course Review")

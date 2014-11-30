@@ -38,7 +38,25 @@ def logout():
 @app.route('/recommender', methods=['POST', 'GET'])
 def home():
 	if session.has_key('logged_in'):
-		data = [("Womens's Clothing","Women's Clothing" ), ("Men's Clothing", "Men's Clothing"), ('Consumer Electronics','Consumer Electronics')]
+		data = [(u'footwear', u'footwear'),(u'fasion wholesale', u'fasion wholesale'),\
+		(u'guest services', u'guest services'),(u'eyewear', u'eyewear'),\
+		(u'books and digital media', u'books and digital media'),(u"women's shoes", u"women's shoes"),\
+		(u"women's clothing", u"women's clothing"),(u'makeup', u'makeup'),(u"children's footwear", u"children's footwear"),\
+		(u'diamonds', u'diamonds'),(u'skincare', u'skincare'),(u'cellular accessories', u'cellular accessories'),\
+		(u"women's jewelry", u"women's jewelry"),(u'clothing & shoes', u'clothing & shoes'),(u'sporting goods', u'sporting goods'),\
+		(u'chocolates', u'chocolates'),(u'personalized gifts', u'personalized gifts'),(u'shoes', u'shoes'),\
+		(u"men's gifts", u"men's gifts"),(u'stuffed animals', u'stuffed animals'),(u'headwear', u'headwear'),\
+		(u"children's apparel", u"children's apparel"),(u'clothing', u'clothing'),(u'consumer electronics', u'consumer electronics'),\
+		(u'candles', u'candles'),(u'sports apparel', u'sports apparel'),(u'home furnishings', u'home furnishings'),\
+		(u'furniture', u'furniture'),(u'video games', u'video games'),(u'sports clothing', u'sports clothing'),\
+		(u"men's clothing", u"men's clothing"),(u"children's clothing", u"children's clothing"),(u'cookies', u'cookies'),\
+		(u'restaurant', u'restaurant'),(u'nutritional supplements', u'nutritional supplements'),(u'denim', u'denim'),\
+		(u'beauty products', u'beauty products'),(u' beauty products', u' beauty products'),(u'disney', u'disney'),\
+		(u"women's handbags", u"women's handbags"),(u'plus size clothing', u'plus size clothing'),(u'telecommunication', u'telecommunication'),\
+		(u'coffee', u'coffee'),(u'jewelry', u'jewelry'),(u'hair care', u'hair care'),(u' accessories', u' accessories'),\
+		(u"girl's clothing", u"girl's clothing"),(u'department store', u'department store'),(u'maternity clothing', u'maternity clothing'),\
+		(u'ice cream', u'ice cream'),(u' clothing', u' clothing'),(u'photography', u'photography'),(u'mattress', u'mattress'),\
+		(u'perfume', u'perfume')]
 		form = categoriesForm()
 		form.category.choices = data
 		if request.method == 'POST' and form.validate_on_submit():
@@ -62,7 +80,7 @@ def storesNumber():
 
 
 		if form_validated_on_submit(forms):
-			#Dictionary that will be sent to the recommender in the follwoing format
+			#Dictionary that will be sent to the recommender in the following format
 			#{'FirstMall': {'Men\'s Clothing':8, 'Beauty Products':11, 'Consumer Electronics':11}}
 			dictionary = {"XMALL":{}}
 
@@ -73,12 +91,12 @@ def storesNumber():
 				list_ot_tuples.append((cat_form[0],cat_form[1].numberOfStores.data))
 
 			dictionary["XMALL"] = dict(list_ot_tuples)
-
+			print dictionary
 			recommender.dataset.update(dictionary)
-			
+
 			recommendations = recommender.custom_recommender(recommender.dataset,"XMALL")
 
-			#Remove any previous recommendations that might have already been in session['recommendations'] 
+			#Remove any previous recommendations that might have already been in session['recommendations']
 			if (session.get('recommendations') != None):
 				session.pop('recommendations')
 
@@ -102,5 +120,22 @@ def results():
 
 	return render_template("results.html")
 
+
+@app.route('/dataset')
+def queryDataset():
+	return render_template('dataset.html')
+
+@app.route('/getstores/<mallname>', methods=['GET','POST'])
+def getStores(mallname):
+
+	malldata = {"name":"MallX",
+					"stores":["JoeMall", "MaryMall", "ReneMall", "AntoineMall"]}
+	if mallname == malldata['name']:
+
+		return jsonify(malldata)
+
+	return jsonify({})
+
+	# return redirect(url_for('queryDataset'))
 
 

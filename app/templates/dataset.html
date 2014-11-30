@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block navbar%}
+
+{% include 'navbar_2.html'%}
+
+{% endblock %}
+
+{% block content %}
+
+<br>
+<br>
+<h2> Data Set Explorer </h2>
+<p class='lead'>Below you can interact with the dataset.</p> 
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+  <li class="active"><a href="#storesbymall" role="tab" data-toggle="tab">Stores By Mall</a></li>
+  <li><a href="#storesbycategory" role="tab" data-toggle="tab">Stores By Category</a></li>
+  <li><a href="#storesbystate" role="tab" data-toggle="tab">Distance Between Shopping Centers</a></li>
+</ul>
+
+<!-- Tab Panes -->
+<div class= "tab-content">
+	<div class="tab-pane active" id="storesbymall">
+	<br>
+		<form data-bind="submit: getStores" class= "form-inline">
+			<div class="form-group">
+				<label class="sr-only" for="searchmall">Email address</label>
+    			<input data-bind="value: mallName" type="text" class="form-control" id="searchmall" placeholder="Name of Shopping Center" required>
+
+			</div>
+			<button class="btn btn-default">Search</button>
+		</form>
+		 
+		 <div data-bind="visible: showStores">
+		 	 <p>List of stores in <span data-bind="text: mallName"></span></p>
+
+			 <ul data-bind="foreach: mallStores">
+				<li data-bind="text: $data"></li>
+			</ul>
+		</div>
+	</div>
+	<div class="tab-pane" id="storesbycategory">
+		<p>Stores by category </p>
+	</div>
+
+	<div class="tab-pane" id="storesbystate">
+		<p>Distance between two given shopping centers</p>
+	</div>
+
+</div>
+{{ flask_util_js.js }}
+<script type="text/javascript" src="../static/js/knockout.js" ></script>
+<script type="text/javascript">
+	function dataSetQuery(){
+		var self = this;
+
+		self.mallName = ko.observable("");
+		self.mallStores= ko.observableArray([]);
+		
+		self.getStores = function(){
+				var url = flask_util.url_for('getStores', {mallname:self.mallName()});
+				$.getJSON(url, function(data){
+					self.mallStores(data.stores);
+					if (self.mallStores){
+						self.showStores(true);
+					}
+					
+				
+				
+			});
+		};
+		self.showStores = ko.observable(false);
+
+		
+	};
+
+	ko.applyBindings(new dataSetQuery());
+</script>
+{% endblock %}
