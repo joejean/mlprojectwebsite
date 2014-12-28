@@ -91,10 +91,11 @@ def storesNumber():
 				list_ot_tuples.append((cat_form[0],cat_form[1].numberOfStores.data))
 
 			dictionary["XMALL"] = dict(list_ot_tuples)
-			print dictionary
+
 			recommender.dataset.update(dictionary)
 
 			recommendations = recommender.custom_recommender(recommender.dataset,"XMALL")
+
 
 			#Remove any previous recommendations that might have already been in session['recommendations']
 			if (session.get('recommendations') != None):
