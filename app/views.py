@@ -1,7 +1,17 @@
 from flask import Flask, render_template, make_response, request, redirect, g, url_for, flash, session, jsonify
-from app import app, recommender
+from app import app, dataset
 from forms import passwordForm, categoriesForm, storesForm
 from config import PASSWORD
+from rq import Queue
+from worker import conn
+from recommender import custom_recommend
+import time
+
+
+@app.before_request
+def before_request():
+	g.dataset = dataset.dict
+
 
 #function to validate a list of form instances
 def form_validated_on_submit(forms):
@@ -82,7 +92,7 @@ def storesNumber():
 		if form_validated_on_submit(forms):
 			#Dictionary that will be sent to the recommender in the following format
 			#{'FirstMall': {'Men\'s Clothing':8, 'Beauty Products':11, 'Consumer Electronics':11}}
-			dictionary = {"XMALL":{}}
+			dictionary = {"USERMALL":{}}
 
 			#List of tuples that contains (cat, numberOfStores)
 			list_ot_tuples = []
@@ -90,13 +100,17 @@ def storesNumber():
 			for cat_form in forms_with_categories:
 				list_ot_tuples.append((cat_form[0],cat_form[1].numberOfStores.data))
 
-			dictionary["XMALL"] = dict(list_ot_tuples)
+			dictionary["USERMALL"] = dict(list_ot_tuples)
 
-			recommender.dataset.update(dictionary)
+			data = dataset.dict
+			data.update(dictionary)
 
-			recommendations = recommender.custom_recommender(recommender.dataset,"XMALL")
-
-
+			#use a background process to run the recommender
+			q = Queue(connection=conn)
+			recommendations = q.enqueue(custom_recommend, data, "USERMALL")
+			#recommendations = recommender.custom_recommender(data,"USERMALL")
+			print recommendations.get_id()
+			recommendations = None
 			#Remove any previous recommendations that might have already been in session['recommendations']
 			if (session.get('recommendations') != None):
 				session.pop('recommendations')
