@@ -8,8 +8,8 @@ $(document).ready(function(){
       url: url,
       dataType: 'json',
       success: function(data){
-          console.log(data);
-        if (data.error == "undefined"){
+        console.log(data);
+        if (data.error == undefined){
 
           $('#loading').hide();
 
