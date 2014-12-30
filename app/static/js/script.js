@@ -14,13 +14,13 @@ $(document).ready(function(){
           $('#loading').hide();
 
           if (_.size(data) !== 0){
-
+            sortedData = _.sortBy(data);
             $('#results').show();
-            var out = "<ul>";
-            $.each(data, function(cat, score){
+            var out = "<ol>";
+            $.each(sortedData, function(cat, score){
               out += "<li>"+cat+"</li>";
             });
-            out += "</ul>";
+            out += "</ol>";
             $('#results').append(out);
             clearInterval(interval);
           }
