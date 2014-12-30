@@ -3,6 +3,7 @@ from app import app, dataset
 from forms import passwordForm, categoriesForm, storesForm
 from config import PASSWORD
 from rq import Queue
+from rq.job import Job
 from worker import conn
 from recommender import custom_recommend
 import time
@@ -107,19 +108,11 @@ def storesNumber():
 
 			#use a background process to run the recommender
 			q = Queue(connection=conn)
-			recommendations = q.enqueue(custom_recommend, data, "USERMALL")
+
+			job = q.enqueue_call(func = custom_recommend, args=(data, "USERMALL"))
 			#recommendations = recommender.custom_recommender(data,"USERMALL")
-			print recommendations.get_id()
-			recommendations = None
-			#Remove any previous recommendations that might have already been in session['recommendations']
-			if (session.get('recommendations') != None):
-				session.pop('recommendations')
 
-			if recommendations:
-				session['recommendations'] = recommendations
-			# redirect(url_for('results'))
-
-			return redirect(url_for('results'))
+			return redirect(url_for('getresults', jobkey = job.get_id() ))
 
 		else:
 			return render_template('stores_number.html', catList = catList, form = forms_with_categories );
@@ -134,6 +127,15 @@ def results():
 		return render_template("results.html", recommendations = recommendations)
 
 	return render_template("results.html")
+
+@app.route('/getresults/<jobkey>', methods = ['GET'])
+def getresults(jobkey):
+	job = Job.fetch(jobkey, connection = conn)
+
+	if (job.is_finished):
+		return jsonify(job.result)
+	else:
+		return "error", 202
 
 
 @app.route('/dataset')
