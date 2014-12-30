@@ -5,3 +5,11 @@ body {
   padding: 40px 15px;
   text-align: center;
 }
+
+#results {
+  display: none;
+}
+
+#noresults{
+  display: none;
+}

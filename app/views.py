@@ -9,9 +9,6 @@ from recommender import custom_recommend
 import time
 
 
-@app.before_request
-def before_request():
-	g.dataset = dataset.dict
 
 
 #function to validate a list of form instances
@@ -68,6 +65,7 @@ def home():
 		(u"girl's clothing", u"girl's clothing"),(u'department store', u'department store'),(u'maternity clothing', u'maternity clothing'),\
 		(u'ice cream', u'ice cream'),(u' clothing', u' clothing'),(u'photography', u'photography'),(u'mattress', u'mattress'),\
 		(u'perfume', u'perfume')]
+		data.sort()
 		form = categoriesForm()
 		form.category.choices = data
 		if request.method == 'POST' and form.validate_on_submit():
@@ -110,9 +108,9 @@ def storesNumber():
 			q = Queue(connection=conn)
 
 			job = q.enqueue_call(func = custom_recommend, args=(data, "USERMALL"))
-			#recommendations = recommender.custom_recommender(data,"USERMALL")
+			#print custom_recommend(data,"USERMALL")
 
-			return redirect(url_for('getresults', jobkey = job.get_id() ))
+			return render_template('results.html', jobkey = job.get_id() )
 
 		else:
 			return render_template('stores_number.html', catList = catList, form = forms_with_categories );
@@ -120,13 +118,7 @@ def storesNumber():
 	return redirect(url_for('home'))
 
 
-@app.route('/results')
-def results():
-	recommendations = session.get('recommendations')
-	if (recommendations != None):
-		return render_template("results.html", recommendations = recommendations)
 
-	return render_template("results.html")
 
 @app.route('/getresults/<jobkey>', methods = ['GET'])
 def getresults(jobkey):
@@ -135,7 +127,7 @@ def getresults(jobkey):
 	if (job.is_finished):
 		return jsonify(job.result)
 	else:
-		return "error", 202
+		return jsonify({"error":"error"}), 202
 
 
 @app.route('/dataset')
