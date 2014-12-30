@@ -15,10 +15,11 @@ $(document).ready(function(){
 
           if (_.size(data) !== 0){
             sortedData = _.sortBy(data);
+            console.log(sortedData);
             $('#results').show();
             var out = "<ol>";
             $.each(sortedData, function(cat, score){
-              out += "<li>"+cat+"</li>";
+              out += "<li>"+score+"</li>";
             });
             out += "</ol>";
             $('#results').append(out);
