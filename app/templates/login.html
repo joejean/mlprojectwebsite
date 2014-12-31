@@ -6,13 +6,13 @@
       {% include 'navbar_1.html' %}
 
       {% endblock %}
-      
+
       {% block content %}
 
           <div class="starter-template">
-            <h1>Shopping Center Project</h1>
+            <h1>Store Recommender for US Shopping Centers</h1>
             <p class="lead">This is a password protected site.<br> Please enter your password in the field below.</p>
-            
+
             {% with error = get_flashed_messages(category_filter=['error']) %}
                 {% if error %}
                   {% for msg in error %}
